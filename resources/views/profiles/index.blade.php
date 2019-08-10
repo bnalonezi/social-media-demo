@@ -4,15 +4,20 @@
 <div class="container">
     <div class="row">
         <div class="col-3 p-5">
-            <img src="{{ asset('img/phpLogo.png') }}" class="rounded-circle" style="width: 200px">
+            <img src="{{$user->profile->profileImage()}}" class="rounded-circle w-100" style="width: 200px">
         </div>
         <div class="col-9 p-5">
             <div class="d-flex justify-content-between align-items-baseline">
                 <h1>{{ $user->username  }}</h1>
-                <a href="/p/create"> Add new post </a>
+                @can('update', $user->profile)
+                    <a href="/p/create"> Add new post </a>
+                @endcan
             </div>
+            @can('update', $user->profile)
+                <a href="/profile/{{$user->id}}/edit"> Edit profile </a>
+            @endcan
             <div class="d-flex">
-                <div class="pr-5"><strong>152</strong>Post</div>
+                <div class="pr-5"><strong>{{$user->posts()->count()}} </strong>Post</div>
                 <div class="pr-5"><strong>23K</strong>Followers</div>
                 <div class="pr-5"><strong>22</strong>Following</div>
             </div>
@@ -23,7 +28,7 @@
                 {{ $user->profile->description  }}
             </div>
             <div>
-                {{ $user->profile->url ?? 'not url availavle'  }}
+                {{ $user->profile->url  }}
             </div>
         </div>
     </div>
@@ -32,7 +37,9 @@
     <div class="row pt-5">
         @foreach($user->posts as $post)
         <div class="col-4 pb-4">
-            <img src="/storage/{{$post->image}}" class="w-100">
+            <a href="/p/{{$post->id}}">
+                <img src="/storage/{{$post->image}}" class="w-100">
+            </a>
         </div>
         @endforeach
     </div>
